@@ -1,0 +1,34 @@
+# This is a suggestion for DC Data manipulation with dplyr course, chapter 5.
+# I was working with hflights package and hflights dataset.
+
+# Which plane (by tail number) flew out of Houston the most times? How many times?
+adv1 <- hflights %>% 
+        filter(TailNum != "") %>%
+        group_by(TailNum) %>%
+        summarise(n = n()) %>%
+        arrange(desc(n)) %>%
+        filter(n == max(n))
+        
+# How many airplanes only flew to one destination from Houston?
+adv2 <- hflights %>%
+        filter(TailNum != "") %>%
+        group_by(TailNum) %>%
+        summarise(ndist = n_distinct(Dest)) %>%
+        filter(ndist == 1) %>%
+        summarise(nplanes = n())
+
+# Find the most visited destination for each carrier 
+adv3 <- hflights %>% 
+        group_by(UniqueCarrier, Dest) %>%
+        summarise(n = n()) %>%
+        mutate(rank = rank(-n)) %>%
+        arrange(rank) %>%
+        filter(rank == 1)
+        
+# Find the carrier that travels to each destination the most
+adv4 <- hflights %>% 
+        group_by(Dest, UniqueCarrier) %>%
+        summarise(n = n()) %>%
+        mutate(rank = rank(-n)) %>%
+        arrange(rank) %>%
+        filter(rank == 1)
