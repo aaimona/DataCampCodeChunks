@@ -1,0 +1,26 @@
+# The data.table DT
+set.seed(1L)
+DT <- data.table(A=rep(letters[2:1], each=4L), B=rep(1:4, each=2L), C=sample(8))
+# the DT data.table looks like this
+#    A B C
+# 1: b 1 3
+# 2: b 1 8
+# 3: b 2 4
+# 4: b 2 5
+# 5: a 3 1
+# 6: a 3 7
+# 7: a 4 2
+# 8: a 4 6
+
+# I create DT2 which contains cumulative sums of column C, grouped by A and then by B
+DT2 <- DT[, .(C = cumsum(C)), by = .(A = A, B = B)]
+
+# Here i'm getting the last two values per grouping in A from C in DT2 while i group by A
+DT2[, .(C = tail(C, 2)), by = .(A = A)]
+# it's important to note that i redefine the contents of columns inside .()
+# the output to that is:
+#    A C
+# 1: b 4
+# 2: b 9
+# 3: a 2
+# 4: a 8
