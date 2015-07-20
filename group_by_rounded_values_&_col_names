@@ -1,0 +1,14 @@
+# When we want to e.g. group by rounded value, here's one way to code it.
+# Additionally, the way to name columns in data.table (the syntax is a bit deceptive for me).
+# I'm learning data.table package hence the syntax below. Data - iris dataset.
+
+# Group the specimens by Sepal area (to the nearest 10 cm2) and count how many occur in each group.
+DT[, .N, by = 10 * round(Sepal.Length * Sepal.Width / 10)]
+# i is missing because i'm taking all rows. 
+# j is .N because i want to count the rows based on some criteria
+# by expresses my criterion
+
+# Now name the output columns `Area` and `Count`
+DT[, .(Count = .N), by = .(Area = 10 * round(Sepal.Length * Sepal.Width / 10))]
+# this code follows the i, j, by syntax described above
+# naming columns consists of adding .(Column_Name_Here = ___) around whatever i coded earlier
