@@ -1,1 +1,15 @@
-# gsojhrgnosenginbd
+# Just a simple example of a plot manipulation, based on pressure dataset
+pressure %>% ggvis(~temperature, ~pressure, stroke := "red", strokeWidth := 2, strokeDash := 6) %>% layer_lines()
+pressure %>% ggvis(~temperature, ~pressure, size = ~pressure, fill := "green", opacity = ~temperature) %>% layer_points()
+
+# The difference between = and := operators:
+# = MAPS property onto variable,
+# := SETS property to be equal to a given value
+
+# PIPING is very useful here since there are many arguments and properties to the ggvis and it's easy to generate unreadable code
+
+# ggvis helps in creating maps - i'm able to connect data points in a specific order so that they create polygons
+library("maps")
+texas <- ggplot2::map_data("state", region = "texas")
+texas %>% ggvis(~long, ~lat, fill := "darkorange") %>% layer_paths()
+
