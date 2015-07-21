@@ -1,0 +1,21 @@
+# I want to get the median of all four columns, keeping their original names, sorted by Species, and then order
+# in order not to create unnecessary variables, i'm using chaining: dt[.......][...]
+# iris dataset
+DT[, .(Sepal.Length = median(Sepal.Length), Sepal.Width = median(Sepal.Width), Petal.Length = median(Petal.Length), Petal.Width = median(Petal.Width)), by = .(Species = Species)][order(Species = Species, decreasing = TRUE)]
+
+# Rewriting column names one by one is boring and prone to typos, so i'm gonna use a special .SD variable
+# that's predefined in data.table package. .SD means Subset of Data and contains names of every column
+# except for those in by argument.
+# I use lapply because i want the result to be in the form of a list. If j returns a list, then a data.table is returned.
+# my DT is a data.table containing 3 columns: x, y and z.
+
+# Mean of columns
+DT[, lapply(.SD, mean), by = x]
+ 
+# Median of columns
+DT[, lapply(.SD, median), by = x]
+
+# But what if i don't want to use all of those hundreds of columns that i have in my dataset?
+# Thanks to .SDcols i'm able to subset column names. The syntax is as follows:
+DT[, lapply(.SD, mean), by = x, .SDcols = ...]
+# .SDcols may be a vector, an interval (e.g. 3:57) or a function call.
