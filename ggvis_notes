@@ -2,12 +2,14 @@
 pressure %>% ggvis(~temperature, ~pressure, stroke := "red", strokeWidth := 2, strokeDash := 6) %>% layer_lines()
 pressure %>% ggvis(~temperature, ~pressure, size = ~pressure, fill := "green", opacity = ~temperature) %>% layer_points()
 
+# := OPERATOR
 # The difference between = and := operators:
 # = MAPS property onto variable,
 # := SETS property to be equal to a given value
 
 # PIPING is very useful here since there are many arguments and properties to the ggvis and it's easy to generate unreadable code
 
+# MAPS
 # ggvis helps in creating maps - i'm able to connect data points in a specific order so that they create polygons
 library("maps")
 texas <- ggplot2::map_data("state", region = "texas")
@@ -19,3 +21,39 @@ texas %>% ggvis(~long, ~lat, fill := "darkorange") %>% layer_paths()
 # compute_smooths() always returns data.frame with columns pred_ and resp_, that is why the order of columns
 # in compute_smooths() 2nd argument is y(resp_) ~ x(pred_) - i'm predicting y with x.
 mtcars %>% compute_smooth(mpg ~ wt) %>% ggvis(~ pred_, ~resp_) %>% layer_lines
+
+# HISTOGRAM
+# Here i'm doing similar trick as above, but this time i'm walking through histogram.
+# First i'm using compute_bin(), which gives me data.frame with columns count_, x_, xmin_ and xmax_.
+faithful %>% compute_bin(~ waiting, width = 5)
+
+# Then i'm adding layer_rects() which builds rectangles based on coordinates from compute_bin()
+faithful %>% compute_bin(~ waiting, width = 5) %>% ggvis(x = ~ xmin_, x2 = ~ xmax_, y = ~ 0, y2 = ~ count_) %>% layer_rects()
+
+# DENSITY PLOT
+# Same trick, but with density plot. First compute_density(), then plotting pred_ and resp_ columns, then layer_lines()
+faithful %>% compute_density(~ waiting) %>% ggvis(x = ~ pred_, y = ~ resp_) %>% layer_lines()
+
+# Building the same plot, but using layer_densities() directly. Ofc, fill property is totally optional.
+faithful %>% ggvis(~ waiting, fill := "green") %>% layer_densities()
+
+# NB: if we want to build a plot from scratch, here's the template: dataset %>% compute_<summary>() %>% layer_<marks>().
+# if we want to use the layer directly, here's the template: dataset %>% ggvis() %>% layer_<summary>()
+
+# Here i just want to calculate the count values for each amount of cylinders. 
+# I'm using compute_count() - it will give me a data.frame with columns count_ and x_.
+mtcars %>% compute_count(~factor(cyl))
+
+# GGVIS FEAT. DPLYR
+# Dplyr and ggvis packages work together very well. Hence, i can use various dplyr functions, such as group_by,
+# for the purpose of creating cool plots. NB: i don't use tilde syntax for group_by()
+# since this function is not in ggvis package. Another thing worth remembering: i should use factor version
+# of my grouping variable because it hepls with plotting (e.g., legend is created).
+mtcars %>% group_by(cyl) %>% ggvis(~mpg, fill = ~factor(cyl)) %>% layer_densities()
+
+# Here i'm additionally using interaction() to make sure that the property i'm mapping is mapped on
+# all possible combinations of grouping variables (in case there are more than one grouping variable).
+# It makes the plot more readable since each group has its own property - fill in this case.
+mtcars %>% group_by(cyl, am) %>% ggvis(~mpg, fill = ~interaction(cyl, am)) %>% layer_densities()
+# You don't want to mix up group_by() and interaction(). The former is used to group observations,
+#  while the latter allows you to specify properties.
