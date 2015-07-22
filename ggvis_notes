@@ -13,3 +13,9 @@ library("maps")
 texas <- ggplot2::map_data("state", region = "texas")
 texas %>% ggvis(~long, ~lat, fill := "darkorange") %>% layer_paths()
 
+# In this one i'm trying to walk through what layer_smooths() does, i.e. first i'm using compute_smooths()
+# to create a set of coordinates that could be depicted as points, and second, i'm plotting those coordinates
+# with column ~pred_ as x and column ~resp_ as y. 
+# compute_smooths() always returns data.frame with columns pred_ and resp_, that is why the order of columns
+# in compute_smooths() 2nd argument is y(resp_) ~ x(pred_) - i'm preducting y with x.
+mtcars %>% compute_smooth(mpg ~ wt) %>% ggvis(~ pred_, ~resp_) %>% layer_lines
