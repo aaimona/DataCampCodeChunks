@@ -18,3 +18,27 @@ mtcars %>%
         fill := input_radiobuttons(label = "Choose color:",
                                     choices = c("black", "red", "blue", "green"))) %>% 
   layer_points()
+  
+# Here, another input widget - input_text().
+mtcars %>% 
+  ggvis(~mpg, ~wt, 
+        fill := input_text(label = "Choose color:", 
+                                   value = "black")) %>% 
+  layer_points()
+
+# MAGIC! ASSIGNING FILL PROPERTY TO A VARIABLE OF CHOICE
+# Turns out that i can let my user choose by which variable s/he gets his/her graph coloured, which is cool.
+# The value of choices argument to input_select() is a result of names() function call. What's important is 
+# that i have to add additional argument, map = as.name.
+mtcars %>% 
+  ggvis(~mpg, ~wt,
+        fill = input_select(label = "Choose fill variable:",
+                            choices = names(mtcars),
+                            map = as.name)) %>% 
+  layer_points()
+
+# USING INPUT WIDGETS INSIDE LAYER_ FUNCTION
+# I can play with e.g. binwidth using slider, instead of assigning fixed value to it.
+mtcars %>% 
+  ggvis(~mpg) %>% 
+  layer_histograms(width = input_slider(label = "Choose a binwidth:", min = 1, max = 20))
