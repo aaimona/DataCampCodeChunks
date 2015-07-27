@@ -42,3 +42,22 @@ mtcars %>%
 mtcars %>% 
   ggvis(~mpg) %>% 
   layer_histograms(width = input_slider(label = "Choose a binwidth:", min = 1, max = 20))
+
+# AXES AND LEGENDS
+# add_axis() function allows me to change properties of existing axes, such as rename or add labeled and unlabeled ticks.
+# It also allows me to add additional axes.
+faithful %>% 
+  ggvis(~waiting, ~eruptions) %>% 
+  layer_points() %>% 
+  add_axis("y", title = "Duration of eruption (m)", 
+          values = c(2, 3, 4, 5), subdivide = 9) %>% 
+  add_axis("x", title = "Time since previous eruption (m)",
+            values = c(50, 60, 70, 80, 90), subdivide = 9)
+
+# Change the code below to change the axes' locations
+faithful %>% 
+  ggvis(~waiting, ~eruptions) %>% 
+  layer_points() %>%
+  add_axis("x", orient = "top") %>%
+  add_axis("y", orient = "right")
+
