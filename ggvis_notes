@@ -9,6 +9,9 @@ pressure %>% ggvis(~temperature, ~pressure, size = ~pressure, fill := "green", o
 
 # PIPING is very useful here since there are many arguments and properties to the ggvis and it's easy to generate unreadable code
 
+# DATA SPACE VS. VISUAL SPACE - important difference. Graphs are just data space values translated into visual space values.
+# Variables are "located" in data space and properties are "located" in visual space and need visual values, e.g. pixels, colors.
+
 # MAPS
 # ggvis helps in creating maps - i'm able to connect data points in a specific order so that they create polygons
 library("maps")
@@ -57,3 +60,54 @@ mtcars %>% group_by(cyl) %>% ggvis(~mpg, fill = ~factor(cyl)) %>% layer_densitie
 mtcars %>% group_by(cyl, am) %>% ggvis(~mpg, fill = ~interaction(cyl, am)) %>% layer_densities()
 # You don't want to mix up group_by() and interaction(). The former is used to group observations,
 #  while the latter allows you to specify properties.
+
+# AXES AND LEGENDS
+# add_axis() function allows me to change properties of existing axes, such as rename or add labeled and unlabeled ticks.
+# It also allows me to add additional axes.
+faithful %>% 
+  ggvis(~waiting, ~eruptions) %>% 
+  layer_points() %>% 
+  add_axis("y", title = "Duration of eruption (m)", 
+          values = c(2, 3, 4, 5), subdivide = 9) %>% 
+  add_axis("x", title = "Time since previous eruption (m)",
+            values = c(50, 60, 70, 80, 90), subdivide = 9)
+
+# Here i'm just adding some more properties, e.g. orientation of axes.
+faithful %>% 
+  ggvis(~waiting, ~eruptions) %>% 
+  layer_points() %>%
+  add_axis("x", orient = "top") %>%
+  add_axis("y", orient = "right")
+
+# When i want to add a legend, what i need to remember is that i should specify the properties for which
+# i want to create a legend (i can also join properties names in a vector using c()). Example below:
+faithful %>% 
+  ggvis(~waiting, ~eruptions, opacity := 0.6, 
+        fill = ~factor(round(eruptions))) %>% 
+  layer_points() %>% 
+  add_legend("fill", title = "~ duration (m)", orient = "left") 
+  # First argument is "fill", not "title". 
+
+# ADDING MY OWN SCALES  
+# Quite often i will want to customize my graph by colouring it some more.
+# I can do that by adding my own scale that will map a variable to a property, e.g. 
+# a numeric variable ~disp (hence scale_numeric()) to fill property.
+# Other scales: scale_datetime(), scale_logical(), scale_nominal(), scale_singular()
+mtcars %>% 
+  ggvis(~wt, ~mpg, fill = ~disp, stroke = ~disp, strokeWidth := 2) %>%
+  layer_points() %>%
+  scale_numeric("fill", range = c("red", "yellow")) %>%
+  scale_numeric("stroke", range = c("darkred", "orange"))
+
+# Sometimes, if i map one of the variables to opacity, points could get too transparent to actually be seen.
+# I can avoid that by limiting the range of opacity, like in the example below.
+mtcars %>% ggvis(x = ~wt, y = ~mpg, fill = ~factor(cyl), opacity = ~hp) %>%
+  layer_points() %>%
+  scale_numeric("opacity", range = c(0.2, 1))
+  
+# I may also want to play with the range of x/y axes, e.g. in order to show some more context.
+mtcars %>% ggvis(~wt, ~mpg, fill = ~disp) %>%
+  layer_points() %>%
+  scale_numeric("y", domain = c(0, NA)) %>%
+  scale_numeric("x", domain = c(0, 6))
+
