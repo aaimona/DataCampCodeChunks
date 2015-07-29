@@ -1,1 +1,55 @@
-#
+# R markdown syntax is extremely useful for someone preparing reports on a regular basis.
+# It helps to embed data, graphs or even beautiful mathematical equations into such report.
+# As for the .Rmd syntax itself, there are several formatting instructions that i need to remember,
+# and i won't go into too many details, it's all here: http://rmarkdown.rstudio.com/authoring_basics.html
+
+# What is really worth noting is that .Rmd file can make use of LaTeX syntax to create beautiful, elegant equations:
+#         $$ fahrenheit = celsius \times \frac{5}{9} + 32 $$
+# Double dollar sign is used to put the equation in a new line, in a separate block;
+# \times mean times (*);
+# \frac introduces fraction, where
+# first {} is numerator and second {} is denominator
+
+# KNITR
+# When i want to insert some code, e.g. in order to show how i cleaned my data,
+# i need to surround my code with the following structure:
+```{r}
+# code here
+```
+# if the code returns any result, it will insert this result in the .Rmd report.
+# Since each .Rmd document is given a fresh session of R, i have to load all packages i'm using,
+# define each variable i created etc., because the report won't have access to the environment of my current R session.
+
+# OFten the code i embed into the report may return some messages, warnings or errors. 
+# If i don't want them to show, i add to the code in the following manner:
+```{r message = FALSE}
+library(nasaweather)
+library(dplyr)
+library(ggvis)
+```
+# It is also important to remember to make a package loading chunk of code the first we embed
+# - so that next chunks have access to those packages.
+
+# CODE CHUNKS OPTIONS
+# I can choose how i want my code to function in the report. Here are three options:
+# echo = FALSE - R will not display the code, but it will run it and display its results,
+# eval = FALSE - R will not run the code or display its results, but it will display the code itself,
+# results = 'hide' - R will not display the results of code, but it will run it and display the code itself
+
+# AUTOMATING REPORTS
+# I can automate reports by adding fields depending on the value of a variable defined earlier.
+For the remainder of the report, we will look only at data from the year `r year`
+# `r year` inside the sentence means that instead of it the final rendered report will contain the value of the year variable
+
+# LABELING OF CODE CHUNKS
+```{r chained, results='hide'}
+mtcars %>%
+  group_by(factor(cyl)) %>%
+  ggvis(~mpg, ~wt, fill = ~cyl) %>% 
+  layer_points()
+```
+
+
+```{r ref.label = 'chained', echo = FALSE}
+```
+# First i name the code chunk directly after r in ```{r} syntax, then i ref it with ref.label = 'chunk_name'
