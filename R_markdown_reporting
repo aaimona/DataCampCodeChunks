@@ -1,3 +1,5 @@
+# THE BASICS OF R MARKDOWN: https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf
+
 # R markdown syntax is extremely useful for someone preparing reports on a regular basis.
 # It helps to embed data, graphs or even beautiful mathematical equations into such report.
 # As for the .Rmd syntax itself, there are several formatting instructions that i need to remember,
@@ -53,3 +55,23 @@ mtcars %>%
 ```{r ref.label = 'chained', echo = FALSE}
 ```
 # First i name the code chunk directly after r in ```{r} syntax, then i ref it with ref.label = 'chunk_name'
+
+# I could give a YAML "header" to my .Rmd document, like the one below:
+---
+title: "Cloud Cover"
+author: "Anonymous"
+date: "December 2, 2014"
+output: pdf_document
+---
+# and R will knit a nice-looking header in the document i will create.
+# The last line, output, could be modified in order to change the output format:
+# html_document, pdf_document, word_document, beamer_presentation etc.
+
+# If i want to further customize my output, there's a lot ways to do it by overwriting options.
+# A thorough guide on this can be found here: https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf
+# I can make my report use css, add table of contents, change theme etc.
+
+# R MARKDOWN FEAT. SHINY
+# I can make my .Rmd reports interactive with collaboration with Shiny package.
+# I just need to add "runtime: shiny" line in my YAML header and make sure that the output format is
+# one of the following: html_document, slidy_presentation or ioslides_presentation
