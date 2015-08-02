@@ -1,0 +1,40 @@
+# 4 main tests:
+# z-test, t-test (single sample), t-test (dependent), t-test (independent)
+
+# T-STUDENT DISTRIBUTION
+# Generate a vector of 100 values between -4 and 4
+x <- seq(-4, 4, length = 100)
+
+# Simulate the t-distribution
+y_1 <- dt(x, 4)
+y_2 <- dt(x, 6)
+y_3 <- dt(x, 8)
+y_4 <- dt(x, 10)
+y_5 <- dt(x, 12)
+
+# Plot the t-distributions.
+# NB: i don't use piping and it all works well - all lines are in the same graph.
+# i also don't use intermediary variables to pass to lines() function.
+plot(x, y_1, 
+     type = "l", 
+     lwd = 2,
+     col = "black", 
+     xlab = "T value", 
+     ylab = "Density", 
+     main = "Comparison of t-distributions")
+lines(x, y_2, col = "red")
+lines(x, y_3, col = "orange")
+lines(x, y_4, col = "green")
+lines(x, y_5, col = "blue")
+
+# Add a legend
+legend("topright", 
+      c("df = 4", "df = 6", "df = 8", "df = 10", "df = 12"), 
+      title = "T distribution", 
+      col = c("black", "red", "orange", "green", "blue"), 
+      lty = 1)
+
+# DEPENDENT T-TEST
+# I use it when i measure two individual cases twice, e.g. when i want to see a change in pre/post election approach.
+# A thorough analysis will include: t-value, p-value, Cohen's d (effect size, M/SD), confidence interval (interval estimate)
+#
