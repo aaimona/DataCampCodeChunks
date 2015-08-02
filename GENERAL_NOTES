@@ -1,0 +1,4 @@
+# if i want to define sample size based on my dataset dimensions:
+# n is the first element of the dimensions vector of my_data, which is the number of rows
+n <- dim(my_data)[1]
+
