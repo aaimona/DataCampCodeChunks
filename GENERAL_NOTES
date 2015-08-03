@@ -2,3 +2,4 @@
 # n is the first element of the dimensions vector of my_data, which is the number of rows
 n <- dim(my_data)[1]
 
+ls() # get the list of all variables in your current environment
